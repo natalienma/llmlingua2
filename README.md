@@ -24,3 +24,17 @@ possible to the original. Unlike usual text compression:
 
 Text to compress:
 {text}"""
+
+# Sample 1:
+max_tokens = 100
+temperature = 0.3
+
+Original tokens: 100
+Compressed tokens: 63
+Compression ratio: 1.6x
+
+Original:
+```The effects of climate change on our water resources can have a big impact on our world and our lives. Patterns of where, when, and how much precipitation falls are changing as temperatures rise. Some areas are experiencing heavier rain events while others are having more droughts. Flooding is an increasing issue as our climate is changing. Compared to the beginning of the 20th century,  precipitation events are stronger, heavier, and more frequent across most of the United States. Drought is also becoming```
+
+Compressed:
+```Climate change effects on water resources impact world and lives. Precipitation patterns changing with rising temperatures. Some areas experiencing heavier rain, others more droughts. Flooding increasing with climate change. Compared to 20th century start, precipitation events stronger, heavier, more frequent across most United States. Drought increasing.```
