@@ -22,3 +22,4 @@ def compress_with_gpt(input_text):
     )
     return resp.choices[0].message.content
 
+process.env()
