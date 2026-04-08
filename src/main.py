@@ -11,7 +11,7 @@ Our food supply depends on climate and weather conditions. Higher temperatures, 
 chunks = chunk_text(input_text)
 
 compressed = compress_with_gpt(chunks[0])
-print("Original tokens:", len(chunks[0].split()))
+print("Original tokens:", len(chunks[0]))
 print("Compressed tokens:", len(compressed.split()))
-ratio = len(chunks[0].split()) / len(compressed.split())
+ratio = len(chunks[0]) / len(compressed.split())
 print(f"Compression ratio: {ratio:.1f}x")

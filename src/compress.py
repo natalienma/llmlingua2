@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from openai import OpenAI
 client = OpenAI()
 
@@ -22,4 +25,3 @@ def compress_with_gpt(input_text):
     )
     return resp.choices[0].message.content
 
-process.env()
