@@ -25,12 +25,15 @@ possible to the original. Unlike usual text compression:
 Text to compress:
 {text}"""
 
-# Sample 1:
+# Sample 1 (Vanilla):
 max_tokens = 100
+
 temperature = 0.3
 
 Original tokens: 100
+
 Compressed tokens: 63
+
 Compression ratio: 1.6x
 
 Original:
