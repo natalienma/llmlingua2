@@ -4,7 +4,7 @@ This is based off of the paper: LLMLingua-2: Learn Compression Target via Data D
 LLMLingua-2 uses GPT-4 to create training pairs of original text and compressed text by prompting it to remove unnecessary tokens.
 It then trains a small BERT-style encoder on this dataset. 
 
-# What was wrong with LLMLingua-1?
+## What was wrong with LLMLingua-1?
 It used information entropy from a causal LM (LLaMA) to measure uncertainty to score tokens and prune with respect to those scores. 
 
 ## Why a bidirectional encoder?
