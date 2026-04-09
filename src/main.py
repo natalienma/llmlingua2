@@ -1,6 +1,6 @@
 from compress import compress_with_gpt
 from chunk import chunk_text
-from reconstruct import reconstruct, embed, similarity_score
+from reconstruct import reconstruct, embed
 import tiktoken
 from scipy.spatial.distance import cosine
 

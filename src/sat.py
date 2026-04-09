@@ -1,8 +1,12 @@
 from datasets import load_dataset
-from collections import defaultdict
+from scipy.spatial.distance import cosine
 from compress import compress_with_gpt
+from reconstruct import embed
+import tiktoken
+import json 
 
 ds = load_dataset("emozilla/sat-reading")
+enc = tiktoken.encoding_for_model("gpt-4")
 
 def separate(ds): #split all passages and questions
     passages = []
@@ -17,21 +21,34 @@ def separate(ds): #split all passages and questions
 passages, questions = separate(ds)
 
 # create dictionary to get rid of repeating passages
-# final dict will have 1 of each passage, 1 associated compressed
-og_compressed = {}
+og_compressed = {}  # passage -> {compressed, cosine, ratio}
+
 for passage in passages:
     if passage not in og_compressed:
-        og_compressed[passage] = compress_with_gpt(passage)
+        compressed = compress_with_gpt(passage)
+        passage_embed = embed(passage)
+        compressed_embed = embed(compressed)
+        og_compressed[passage] = {
+            "compressed": compressed,
+            "cosine": 1 - cosine(passage_embed, compressed_embed),
+            "ratio": len(enc.encode(passage)) / len(enc.encode(compressed))
+        }
 
 dataset = []
 for i, item in enumerate(ds['train']):
+    entry = og_compressed[passages[i]]
     dataset.append({
         "passage": passages[i],
+        "compressed_passage": entry["compressed"],
         "question": questions[i],
-        "compressed_passage" : og_compressed[passages[i]],
         "answer": item['answer'],
+        "compression_ratio": entry["ratio"],
+        "cosine_score": entry["cosine"],
         "requires_line": item['requires_line'],
         "id": item['id'],
     })
 
 print(dataset[0])
+
+with open("sat_compressed.json", "w") as f:
+    json.dump(dataset, f, indent=2)
