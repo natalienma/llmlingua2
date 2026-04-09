@@ -1,6 +1,7 @@
 import ollama
 import json 
 import pandas as pd 
+import matplotlib.pyplot as plt
 
 def answer_question(passage, question):
     resp = ollama.chat(model="llama3.2", messages=[
@@ -32,4 +33,3 @@ with open("results_sat.json", "w") as f:
 df = pd.DataFrame(results)
 print(f"Original accuracy: {df['original_correct'].mean():.2%}")
 print(f"Compressed accuracy: {df['compressed_correct'].mean():.2%}")
-df.groupby(pd.cut(df['compression_ratio'], bins=5))['compressed_correct'].mean()
