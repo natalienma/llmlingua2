@@ -41,3 +41,15 @@ Original:
 
 Compressed:
 ```Climate change effects on water resources impact world and lives. Precipitation patterns changing with rising temperatures. Some areas experiencing heavier rain, others more droughts. Flooding increasing with climate change. Compared to 20th century start, precipitation events stronger, heavier, more frequent across most United States. Drought increasing.```
+
+# Quality Metrics:
+## 1. Round Trip Reconstruction
+After compressing the text, have GPT-4 reconstruct the original using the compressed text. Score the similarity using Cosine Similarity scoring.
+
+Original vs Compressed Similarity: 
+0.902 similarity 
+
+Original vs Reconstructed Similarity: 
+0.936 similarity
+
+### GPT-4 reconstructed prompt is more semantically similar to the original than the compressed prompt is to the original. 

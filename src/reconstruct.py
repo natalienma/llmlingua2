@@ -1,8 +1,8 @@
 # Round Trip Reconstruction
 # Prompt GPT-4 to reconstruct the original text from the compressed.
 # Then score cosine similarity
-import numpy as np
 
+import numpy as np
 from dotenv import load_dotenv
 load_dotenv()
 

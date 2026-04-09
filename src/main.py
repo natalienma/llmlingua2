@@ -19,5 +19,5 @@ original_embed = embed(chunks[0])
 compressed_embed = embed(compressed)
 reconstructed_embed = embed(reconstruct(compressed))
 
-print("Original vs Compressed Similarity: " ,cosine(original_embed, compressed_embed))
-print("Original vs Reconstructed Similarity: ", cosine(original_embed, reconstructed_embed))
+print("Original vs Compressed Similarity: " ,1- cosine(original_embed, compressed_embed))
+print("Original vs Reconstructed Similarity: ", 1- cosine(original_embed, reconstructed_embed))
