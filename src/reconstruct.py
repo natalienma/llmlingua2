@@ -4,7 +4,9 @@
 
 import numpy as np
 import json
+import pickle
 from scipy.spatial.distance import cosine
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -46,7 +48,6 @@ for i in range(20):
     original_compressed_scores.append([1- cosine(original_embed, compressed_embed)])
     original_reconstructed_scores.append([1- cosine(original_embed, reconstructed_embed)])
 
-import pickle
 with open("results.pkl", "wb") as f:
     pickle.dump(original_compressed_scores, f)
     pickle.dump(original_reconstructed_scores, f)
