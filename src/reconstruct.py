@@ -3,6 +3,8 @@
 # Then score cosine similarity
 
 import numpy as np
+import json
+from scipy.spatial.distance import cosine
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -27,3 +29,25 @@ def embed(text):
         input = text
     )
     return np.array(resp.data[0].embedding)
+
+with open("sat_compressed.json") as f:
+    data = json.load(f)
+
+original = [i["passage"] for i in data]
+compressed = [i["compressed_passage"] for i in data]
+
+original_compressed_scores = []
+original_reconstructed_scores = []
+for i in range(20):
+    original_embed = embed(original[i])
+    compressed_embed = embed(compressed[i])
+    reconstructed_embed = embed(reconstruct(compressed[i]))
+    
+    original_compressed_scores.append([1- cosine(original_embed, compressed_embed)])
+    original_reconstructed_scores.append([1- cosine(original_embed, reconstructed_embed)])
+
+import pickle
+with open("results.pkl", "wb") as f:
+    pickle.dump(original_compressed_scores, f)
+    pickle.dump(original_reconstructed_scores, f)
+

@@ -58,5 +58,5 @@ Original vs Reconstructed Similarity:
 Through a SAT English dataset, passages were compressed with GPT-4. 
 We then tested performance of a third-party open source model (not GPT or BERT) on questions with both original passages and compressed passages:
 
-```Original accuracy: 63.09%
-Compressed accuracy: 54.36%```
+Original accuracy: 63.09%
+Compressed accuracy: 54.36%
