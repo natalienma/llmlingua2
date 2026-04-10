@@ -1,62 +1,35 @@
-This is based off of the paper: LLMLingua-2: Learn Compression Target via Data Distillation for Efficient and Faithful Task-Agnostic Prompt Compression
+# LLMLingua-2 Experiments
 
-# What is LLMLingua-2?
-LLMLingua-2 uses GPT-4 to create training pairs of original text and compressed text by prompting it to remove unnecessary tokens.
-It then trains a small BERT-style encoder on this dataset. 
+## Getting Started
 
-## What was wrong with LLMLingua-1?
-It used information entropy from a causal LM (LLaMA) to measure uncertainty to score tokens and prune with respect to those scores. 
+To get started with LLMLingua-2 experiments, simply install it using pip:
 
-## Why a bidirectional encoder?
-BERT looks at all tokens simultaneously 
+```bash
+pip install llmlingua
+```
 
-## Causal vs. Masked LMs
+To collect your own data using GPT-4, install the following packages:
+```bash
+pip install openai==0.28
 
-# Prompt used in the paper:
-COMPRESSION_PROMPT = """You are an excellent linguist. Compress the given 
-text to short expressions, such that you can reconstruct it as close as 
-possible to the original. Unlike usual text compression:
-1. Compress by removing words only — never add new words
-2. Compress as aggressively as possible  
-3. Retain as much information as possible
-4. Keep all named entities, numbers, dates
-5. Output ONLY the compressed text, nothing else
+pip install spacy
+python -m spacy download en_core_web_sm
+```
 
-Text to compress:
-{text}"""
+To train your own compressor on the collected data, install:
+```bash
+pip install scikit-learn
+pip install tensorboard
+```
 
-# Sample 1 (Vanilla):
-max_tokens = 100
+## Data collection
 
-temperature = 0.3
+We release our collected GPT-4 compression result at [HF](https://huggingface.co/datasets/microsoft/MeetingBank-LLMCompressed) after review. We also provide the whole data collection pipeline at [**collect_data.sh**](data_collection/collect_data.sh) to help you construct your custom compression dataset.
 
-Original tokens: 100
+## Model Training
 
-Compressed tokens: 63
+To train a compressor on the collected data, simply run [**train.sh**](model_training/train.sh)
 
-Compression ratio: 1.6x
+## Evaluation
 
-Original:
-```The effects of climate change on our water resources can have a big impact on our world and our lives. Patterns of where, when, and how much precipitation falls are changing as temperatures rise. Some areas are experiencing heavier rain events while others are having more droughts. Flooding is an increasing issue as our climate is changing. Compared to the beginning of the 20th century,  precipitation events are stronger, heavier, and more frequent across most of the United States. Drought is also becoming```
-
-Compressed:
-```Climate change effects on water resources impact world and lives. Precipitation patterns changing with rising temperatures. Some areas experiencing heavier rain, others more droughts. Flooding increasing with climate change. Compared to 20th century start, precipitation events stronger, heavier, more frequent across most United States. Drought increasing.```
-
-# Quality Metrics:
-## 1. Round Trip Reconstruction
-After compressing the text, have GPT-4 reconstruct the original using the compressed text. Score the similarity using Cosine Similarity scoring.
-
-Original vs Compressed Similarity: 
-0.902 similarity 
-
-Original vs Reconstructed Similarity: 
-0.936 similarity
-
-### GPT-4 reconstructed prompt is more semantically similar to the original than the compressed prompt is to the original. 
-
-## SAT English:
-Through a SAT English dataset, passages were compressed with GPT-4. 
-We then tested performance of a third-party open source model (not GPT or BERT) on questions with both original passages and compressed passages:
-
-Original accuracy: 63.09%
-Compressed accuracy: 54.36%
+We provide a script [**compress.sh**](evaluation/scripts/compress.sh) to compress the original context on several benchmarks. After compression, run [**evaluate.sh**](evaluation/scripts/evaluate.sh) to evalate on down-stream task using the compressed prompt.
