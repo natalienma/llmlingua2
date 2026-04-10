@@ -1,4 +1,5 @@
 # continuous scoring from attention
+# does not work because raw attention weights =/= importance
 from transformers import AutoTokenizer, AutoModel
 import torch
 
