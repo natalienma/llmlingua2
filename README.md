@@ -69,7 +69,7 @@ Compressed accuracy: 54.36%
 There seems to be no strong relationship between performance of compressed vs. uncompressed.
 
 ### Alignment 
-**Alignment could not be achieved:**
+**Soft Scoring could not be achieved:**
 1. Soft Scoring with GPT-4:
 Prompt GPT-4 to score each word from 0.0-1.0, providing more nuance for pruning.
 Problem: GPT-4 hallucinates due to lack of reasoning. This hallucination compounded over time and soon all scores were converging to 0.

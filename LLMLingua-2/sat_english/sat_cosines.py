@@ -1,6 +1,6 @@
-from LLMLingua2.src.compress import compress_with_gpt
-from LLMLingua2.src.chunk import chunk_text
-from LLMLingua2.src.reconstruct import reconstruct, embed
+from src.compress import compress_with_gpt
+from src.chunk import chunk_text
+from src.reconstruct import reconstruct, embed
 import tiktoken
 from scipy.spatial.distance import cosine
 

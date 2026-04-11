@@ -32,23 +32,24 @@ def embed(text):
     )
     return np.array(resp.data[0].embedding)
 
-with open("sat_compressed.json") as f:
-    data = json.load(f)
+if __name__ == "__main__":
+    with open("sat_compressed.json") as f:
+        data = json.load(f)
 
-original = [i["passage"] for i in data]
-compressed = [i["compressed_passage"] for i in data]
+    original = [i["passage"] for i in data]
+    compressed = [i["compressed_passage"] for i in data]
 
-original_compressed_scores = []
-original_reconstructed_scores = []
-for i in range(20):
-    original_embed = embed(original[i])
-    compressed_embed = embed(compressed[i])
-    reconstructed_embed = embed(reconstruct(compressed[i]))
-    
-    original_compressed_scores.append([1- cosine(original_embed, compressed_embed)])
-    original_reconstructed_scores.append([1- cosine(original_embed, reconstructed_embed)])
+    original_compressed_scores = []
+    original_reconstructed_scores = []
+    for i in range(20):
+        original_embed = embed(original[i])
+        compressed_embed = embed(compressed[i])
+        reconstructed_embed = embed(reconstruct(compressed[i]))
+        
+        original_compressed_scores.append([1- cosine(original_embed, compressed_embed)])
+        original_reconstructed_scores.append([1- cosine(original_embed, reconstructed_embed)])
 
-with open("results.pkl", "wb") as f:
-    pickle.dump(original_compressed_scores, f)
-    pickle.dump(original_reconstructed_scores, f)
+    with open("results.pkl", "wb") as f:
+        pickle.dump(original_compressed_scores, f)
+        pickle.dump(original_reconstructed_scores, f)
 
