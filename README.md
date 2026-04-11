@@ -89,3 +89,9 @@ crisis: 0.045
 [SEP]: 0.377
 The problem is attention weights do not correspond to importance. 
 
+# Results:
+| Method            | Compression Ratio | SAT Accuracy |   |   |
+|-------------------|-------------------|--------------|---|---|
+| No Compression    | 1                 | 0.63         |   |   |
+| GPT-4 Compression | 3                 | 0.54         |   |   |
+| BERT Compression  |                   |              |   |   |
