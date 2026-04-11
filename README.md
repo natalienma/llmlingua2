@@ -50,6 +50,9 @@ Original vs Compressed Similarity:
 Original vs Reconstructed Similarity: 
 0.936 similarity
 
+As compression becomes more aggressive, semantic similarity decreases.
+![alt text](<Compression vs Cosine.png>)
+
 ### GPT-4 reconstructed prompt is more semantically similar to the original than the compressed prompt is to the original. 
 
 # Evaluation using SAT English Questions:
@@ -58,6 +61,12 @@ We then tested performance of a third-party open source model (llama3.2, not GPT
 
 Original accuracy: 63.09%
 Compressed accuracy: 54.36%
+
+## Compression - Accuracy Tradeoff
+*llama3.2 seems to be arbitrarily equally as good at answering original and compressed SAT English questions.*
+![alt text](<Compression vs Accuracy 10 Groups .png>)
+![alt text](<Compression vs Accuracy 20 groups.png>)
+There seems to be no strong relationship between performance of compressed vs. uncompressed.
 
 ### Alignment 
 **Alignment could not be achieved:**
@@ -95,3 +104,4 @@ The problem is attention weights do not correspond to importance.
 | No Compression    | 1                 | 0.63         |   |   |
 | GPT-4 Compression | 3                 | 0.54         |   |   |
 | BERT Compression  |                   |              |   |   |
+
