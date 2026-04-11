@@ -4,5 +4,5 @@
 __pycache__/
 *.py[cod]
 *$py.class
-meetingbank_labeled.pkl
-meetingbank_labeled.json
+*.pkl
+*.json
