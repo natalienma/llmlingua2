@@ -8,9 +8,7 @@ It then trains a small BERT-style encoder on this dataset.
 It used information entropy from a causal LM (LLaMA) to measure uncertainty to score tokens and prune with respect to those scores. 
 
 ## Why a bidirectional encoder?
-BERT looks at all tokens simultaneously 
-
-## Causal vs. Masked LMs
+BERT looks at all tokens simultaneously while GPT looks unidirectionally (left only) 
 
 # Prompt used in the paper:
 COMPRESSION_PROMPT = """You are an excellent linguist. Compress the given 
@@ -54,9 +52,40 @@ Original vs Reconstructed Similarity:
 
 ### GPT-4 reconstructed prompt is more semantically similar to the original than the compressed prompt is to the original. 
 
-## SAT English:
+# Evaluation using SAT English Questions:
 Through a SAT English dataset, passages were compressed with GPT-4. 
-We then tested performance of a third-party open source model (not GPT or BERT) on questions with both original passages and compressed passages:
+We then tested performance of a third-party open source model (llama3.2, not GPT or BERT) on questions with both original passages and compressed passages:
 
 Original accuracy: 63.09%
 Compressed accuracy: 54.36%
+
+### Alignment 
+**Alignment could not be achieved:**
+1. Soft Scoring with GPT-4:
+Prompt GPT-4 to score each word from 0.0-1.0, providing more nuance for pruning.
+Problem: GPT-4 hallucinates due to lack of reasoning. This hallucination compounded over time and soon all scores were converging to 0.
+```[0.9, 0.9, 0.9, 0.9, 0.1, 0.5, 0.1, 0.5, 0.1, 1.0, 1.0, 1.0, 1.0, 0.5, 0.5, 0.1, 1.0, 1.0, 0.1, 0.5, 0.1, 0.1, 0.5, 0.5, 0.5, 0.1, 0.1, 0.1, 0.5, 0.1, 0.1, 0.5, 0.1, 0.5, 0.5, 0.1, 0.5, 1.0, 0.5, 0.1, 0.5, 0.5, 1.0, 0.1, 0.5, 0.1, 0.1, 0.5, 0.5, 0.1, 0.1, 0.5, 0.5, 0.5, 0.1, 0.1, 0.1, 0.5, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]```
+
+2. Binary scoring (from original paper):
+Not working because GPT-4 paraphrased the passages in the dataset instead of just dropping tokens.
+- Poetic writing: GPT paraphrases very aggressively to replace flowery language with semantically important words (and reorders alot)
+- Informational writing: Expected GPT to paraphrase less, but it still discards almost the entire middle section. 
+
+Note about SAT English compression: The average compression ratio is 4.5, very aggressive likely because the compression prompt was to “compress as aggressively as possible.” While this affects alignment heavily, it surprisingly didn’t really affect performance– the answers for the aggressively compressed prompts were still quite accurate, with only a 9% loss. This is interesting because SAT English is supposed to be semantically very dense. Often, questions will ask about the context in which a certain word is used. However, if that word is pruned, the answer will likely be incorrect.
+
+3. Soft Scoring with Attention Weights:
+For this sentence: “The Great Depression was a Severe Global Economic Crisis.” The scores are as follows:
+[CLS]: 0.150
+the: 0.038
+great: 0.025
+depression: 0.057
+was: 0.053
+a: 0.034
+severe: 0.027
+global: 0.034
+economic: 0.032
+crisis: 0.045
+.: 0.130
+[SEP]: 0.377
+The problem is attention weights do not correspond to importance. 
+
