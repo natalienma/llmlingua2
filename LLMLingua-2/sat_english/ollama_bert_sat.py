@@ -8,7 +8,7 @@ def answer_question(passage, question):
     ])
     return resp['message']['content']
 
-with open("sat_compressed.json") as f:
+with open("sat_bert_compressed.json") as f:
     dataset = json.load(f)
 
 results = []
@@ -26,7 +26,7 @@ for item in dataset:
         "compressed_correct": compressed_answer[0].upper() == item['answer'].upper(),
     })
 
-with open("results_sat.json", "w") as f:
+with open("results_sat_bert.json", "w") as f:
     json.dump(results, f, indent = 2)
 
 df = pd.DataFrame(results)

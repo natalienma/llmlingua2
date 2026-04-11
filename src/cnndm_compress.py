@@ -11,7 +11,7 @@ enc = tiktoken.encoding_for_model("gpt-4")
 # 100 unique
 seen_passages = {}
 for item in ds:
-    passage = item['context']
+    passage = item['article']
     if passage not in seen_passages:
         seen_passages[passage] = item
     if len(seen_passages) >= 100:
