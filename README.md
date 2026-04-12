@@ -9,9 +9,10 @@ It then trains a small BERT-style encoder on this dataset.
 
 ## What was wrong with LLMLingua-1?
 It used information entropy from a causal LM (LLaMA) to measure uncertainty to score tokens and prune with respect to those scores. BERT looks at all tokens simultaneously while GPT looks unidirectionally, potentially missing out on context from future tokens.
+
 ---
 
-# Prompt used in the paper:
+## Prompt used in the paper:
 COMPRESSION_PROMPT = """You are an excellent linguist. Compress the given 
 text to short expressions, such that you can reconstruct it as close as 
 possible to the original. Unlike usual text compression:
@@ -52,7 +53,7 @@ GPT-4 very aggressively compressed SAT English despite the passages being semant
 ![alt text](plot_sat_original_vs_compressed.png)
 *llama3.2 seems to be arbitrarily equally as good at answering original and compressed SAT English questions.*
 There seems to be no strong relationship between performance of compressed vs. uncompressed, but sometimes, **compressed passages outperform uncompressed passages.** 
-This strongly suggests that compression is not necessarily harmful.
+Compression is not necessarily harmful.
 
 ---
 
@@ -63,7 +64,7 @@ I evaluated the performance of llama3.2 on both the original and compressed SAT 
 |--------|-------------------|--------------|
 | No Compression | 1x | 60.07% |
 | GPT-4 Compression | ~4.5x | 53.36% |
-| BERT Compression | — | 54.04 |
+| BERT Compression | _ | 54.04 |
 
 BERT matches GPT-4 accuracy at similar compression ratios. For SAT English datasets, a small encoder can replace an expensive large model for compression during inference.
 
@@ -84,12 +85,16 @@ SQuAD, a factual text (1.5x compression) retains significantly more semantic sim
 # 4. Round Trip Reconstruction + Cosine Similarity Metric
 After compressing the text, have GPT-4 reconstruct the original using the compressed text. Score the similarity using Cosine Similarity scoring.
 
+For SAT English:
 - **Original vs. Compressed:** 0.902
 - **Original vs. Reconstructed:** 0.936
 
+For SQUAD:
+- **Original vs. Compressed:** 0.945
+- **Original vs. Reconstructed:** 0.9624
+
 As compression becomes more aggressive, semantic similarity decreases.
 ![alt text](<Compression vs Cosine.png>)
-
 **GPT-4 reconstructed prompt is more semantically similar to the original than the compressed prompt is to the original. Therefore, GPT-4 successfully recovers meaning lost during compression.** 
 
 ![alt text](plot_cosine_comparison.png)
@@ -107,7 +112,9 @@ Not working because GPT-4 paraphrased the passages in the dataset instead of jus
 - Poetic writing: GPT paraphrases very aggressively to replace flowery language with semantically important words (and reorders alot)
 - Informational writing: Expected GPT to paraphrase less, but it still discards almost the entire middle section. 
 
-Note about SAT English compression: The average compression ratio is 4.5, very aggressive likely because the compression prompt was to “compress as aggressively as possible.” While this affects alignment heavily, it surprisingly didn’t really affect performance– the answers for the aggressively compressed prompts were still quite accurate, with only a 9% loss. This is interesting because SAT English is supposed to be semantically very dense. Often, questions will ask about the context in which a certain word is used. However, if that word is pruned, the answer will likely be incorrect.
+Note about SAT English compression: The average compression ratio is 4.5, very aggressive likely because the compression prompt was to “compress as aggressively as possible.” While this affects alignment heavily, it surprisingly didn’t really affect performance– the answers for the aggressively compressed prompts were still quite accurate, with only a 9% loss. 
+
+This is interesting because SAT English is supposed to be semantically very dense. Often, questions will ask about the context in which a certain word is used. However, if that word is pruned, the answer will likely be incorrect.
 
 ### 3. Soft Scoring with Attention Weights:
 For this sentence: “The Great Depression was a Severe Global Economic Crisis.” The scores are as follows:
@@ -149,7 +156,3 @@ The problem is attention weights do not correspond to importance.
 
 - More literature/poetry. If compressed and reconstructed, will a model be able to predict the writer?
 
-
-SQUAD:
-Done. Avg cosine (orig vs compressed): 0.9450
-Done. Avg cosine (orig vs reconstructed): 0.9624
