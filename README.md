@@ -1,14 +1,15 @@
+# LLMLingua-2: Domain Specific Compression, Soft Scoring Alignment, and Round-Trip Evaluation
 This is based off of the paper: LLMLingua-2: Learn Compression Target via Data Distillation for Efficient and Faithful Task-Agnostic Prompt Compression
 
+---
+## Background
 # What is LLMLingua-2?
 LLMLingua-2 uses GPT-4 to create training pairs of original text and compressed text by prompting it to remove unnecessary tokens.
 It then trains a small BERT-style encoder on this dataset. 
 
 ## What was wrong with LLMLingua-1?
-It used information entropy from a causal LM (LLaMA) to measure uncertainty to score tokens and prune with respect to those scores. 
-
-## Why a bidirectional encoder?
-BERT looks at all tokens simultaneously while GPT looks unidirectionally (left only) 
+It used information entropy from a causal LM (LLaMA) to measure uncertainty to score tokens and prune with respect to those scores. BERT looks at all tokens simultaneously while GPT looks unidirectionally, potentially missing out on context from future tokens.
+---
 
 # Prompt used in the paper:
 COMPRESSION_PROMPT = """You are an excellent linguist. Compress the given 
@@ -24,21 +25,37 @@ Text to compress:
 {text}"""
 
 # Sample 1 (Vanilla):
-max_tokens = 100
-
-temperature = 0.3
-
-Original tokens: 100
-
-Compressed tokens: 63
-
-Compression ratio: 1.6x
-
-Original:
+Original (100 tokens):
 ```The effects of climate change on our water resources can have a big impact on our world and our lives. Patterns of where, when, and how much precipitation falls are changing as temperatures rise. Some areas are experiencing heavier rain events while others are having more droughts. Flooding is an increasing issue as our climate is changing. Compared to the beginning of the 20th century,  precipitation events are stronger, heavier, and more frequent across most of the United States. Drought is also becoming```
 
-Compressed:
+Compressed (63 tokens):
 ```Climate change effects on water resources impact world and lives. Precipitation patterns changing with rising temperatures. Some areas experiencing heavier rain, others more droughts. Flooding increasing with climate change. Compared to 20th century start, precipitation events stronger, heavier, more frequent across most United States. Drought increasing.```
+
+Compression ratio = 1.6x
+
+---
+
+# Contributions
+# 1. SAT English downstream task evaluation
+
+I used an SAT Egnlish dataset to evaluate compression quality becuase QA pairs provide quantitative feedback as aposed to qualitative methods like RLAIF. Also, SAT English is semantically dense and contains a mix of informational text and literature/prose. 
+
+| Condition | Accuracy |
+|-----------|----------|
+| No Compression | 63.09% |
+| GPT-4 Compression (4.5x ratio) | 54.36% |
+
+**Only a 9% accuracy drop at an average 4.5x compression ratio** 
+GPT-4 very aggressively compressed SAT English despite the passages being semantically dense. 
+
+
+# 2. GPT-4 vs. BERT Compression Accuracy
+
+# 3. Domain-specific compression
+
+# 4. Round Trip Reconstruction + Cosine Similarity Metric
+
+# 5. Alignment + Soft Scoring
 
 # Quality Metrics:
 ## 1. Round Trip Reconstruction

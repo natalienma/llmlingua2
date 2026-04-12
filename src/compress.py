@@ -17,4 +17,6 @@ def compress_with_gpt(passage, max_tokens=2000):
                    "content": COMPRESSION_PROMPT.format(text=passage)}],
         temperature=0
     )
+
     return resp.choices[0].message.content
+

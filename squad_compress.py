@@ -1,17 +1,22 @@
 from datasets import load_dataset
 from scipy.spatial.distance import cosine
-from compress import compress_with_gpt
-from reconstruct import embed
+from src.compress import compress_with_gpt
+from src.reconstruct import embed
 import tiktoken
 import json
 
-ds = load_dataset("abisee/cnn_dailymail", "3.0.0", split="train", streaming=True)
+ds = load_dataset("rajpurkar/squad", split="train", streaming=True)
 enc = tiktoken.encoding_for_model("gpt-4")
 
-# 100 unique
+for item in ds:
+    print(item.keys())
+    print(item)
+    break
+
+# # 100 unique
 seen_passages = {}
 for item in ds:
-    passage = item['article']
+    passage = item['context']
     if passage not in seen_passages:
         seen_passages[passage] = item
     if len(seen_passages) >= 100:
