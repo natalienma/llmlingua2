@@ -50,7 +50,8 @@ I used an SAT Egnlish dataset to evaluate compression quality becuase QA pairs p
 **Only a 9% accuracy drop at an average 4.5x compression ratio** 
 GPT-4 very aggressively compressed SAT English despite the passages being semantically dense. 
 
-![alt text](plot_sat_original_vs_compressed.png)
+<img width="800" height="500" alt="plot_sat_original_vs_compressed" src="https://github.com/user-attachments/assets/ac10339e-b444-4458-b5d0-c40449091fb6" />
+
 *llama3.2 seems to be arbitrarily equally as good at answering original and compressed SAT English questions.*
 There seems to be no strong relationship between performance of compressed vs. uncompressed, but sometimes, **compressed passages outperform uncompressed passages.** 
 Compression is not necessarily harmful.
@@ -74,8 +75,8 @@ BERT matches GPT-4 accuracy at similar compression ratios. For SAT English datas
 | Literary + Fiction| SAT English | ~4.5x | 0.8069 | 0.8114 |High ratio; stylistic content aggressively pruned |
 | Factual / Encyclopedic | SQuAD (Wikipedia) | ~1.5x | 0.9450 | 0.9624 |Lower ratio; dense factual content preserved |
 
-![alt text](plot_sat_vs_squad.png)
-![alt text](plot_ratio_distribution.png)
+<img width="800" height="500" alt="plot_sat_vs_squad" src="https://github.com/user-attachments/assets/6d055ff7-97d8-4361-9708-1a193d6d5970" />
+<img width="800" height="500" alt="plot_ratio_distribution" src="https://github.com/user-attachments/assets/3d70f789-5c58-487c-a8f4-14f157d75d24" />
 The compression ratio for SQuAD clusters at 1-2x while SAT goes from 2-6x. 
 
 > **KEY FINDING:** With the same compression prompt, GPT-4 compresses rhetorical text (SAT) much more aggressively than encyclopedic text. Therefore, **the compression ratio must be a function of the domain and type of text.**
@@ -94,10 +95,10 @@ For SQUAD:
 - **Original vs. Reconstructed:** 0.9624
 
 As compression becomes more aggressive, semantic similarity decreases.
-![alt text](<Compression vs Cosine.png>)
+<img width="640" height="480" alt="Compression vs Cosine" src="https://github.com/user-attachments/assets/f438acde-2c63-4cc5-8d9c-36d07d4f2eaa" />
 **GPT-4 reconstructed prompt is more semantically similar to the original than the compressed prompt is to the original. Therefore, GPT-4 successfully recovers meaning lost during compression.** 
 
-![alt text](plot_cosine_comparison.png)
+<img width="800" height="500" alt="plot_cosine_comparison" src="https://github.com/user-attachments/assets/5031786b-515b-4c3c-8534-e27bb5ab6a0e" />
 GPT-4 was able to reconstruct SQuAD with much higher accuracy than SAT.
 
 # 5. Alignment + Soft Scoring 
