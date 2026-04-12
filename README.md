@@ -2,8 +2,8 @@
 This is based off of the paper: LLMLingua-2: Learn Compression Target via Data Distillation for Efficient and Faithful Task-Agnostic Prompt Compression
 
 ---
-## Background
-# What is LLMLingua-2?
+# Background
+## What is LLMLingua-2?
 LLMLingua-2 uses GPT-4 to create training pairs of original text and compressed text by prompting it to remove unnecessary tokens.
 It then trains a small BERT-style encoder on this dataset. 
 
@@ -67,12 +67,14 @@ I evaluated the performance of llama3.2 on both the original and compressed SAT 
 BERT matches GPT-4 accuracy at similar compression ratios. For SAT English datasets, a small encoder can replace an expensive large model for compression during inference.
 
 # 3. Domain-specific compression
-| Domain | Dataset | Avg. Compression Ratio | Avg. Cosine Score | Notes |
-|--------|---------|------------------------|---------------------|-------|
-| Literary + Fiction| SAT English | ~4.5x | High ratio; stylistic content aggressively pruned |
-| Factual / Encyclopedic | SQuAD (Wikipedia) | ~1.5x | Lower ratio; dense factual content preserved |
+| Domain | Dataset | Avg. Compression Ratio | Avg. Cosine Score (Compressed) | Avg. Cosine Score (Reconstructed) | Notes |
+|--------|---------|------------------------|---------|---------------------|-------|
+| Literary + Fiction| SAT English | ~4.5x | 0.8069 | 0.8114 |High ratio; stylistic content aggressively pruned |
+| Factual / Encyclopedic | SQuAD (Wikipedia) | ~1.5x | 0.9450 | 0.9624 |Lower ratio; dense factual content preserved |
 
 > **Key finding:** With the same compression prompt, GPT-4 compresses rhetorical text (SAT) much more aggressively than encyclopedic text. Therefore, the compression ratio must be a function of the domain and type of text. 
+
+SQuAD, a factual text (1.5x compression) retains significantly more semantic similarity than SAT (4.5x compression). Reconstruction recovers some lost meaning, but the gap is larger for SQuAD (0.017 gain) vs SAT (0.005 gain). Therefore GPT-4 recovers more meaning from factual compressed text than rhetorical compressed text
 
 # 4. Round Trip Reconstruction + Cosine Similarity Metric
 After compressing the text, have GPT-4 reconstruct the original using the compressed text. Score the similarity using Cosine Similarity scoring.

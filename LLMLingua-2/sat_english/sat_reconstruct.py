@@ -33,7 +33,7 @@ def embed(text):
     return np.array(resp.data[0].embedding)
 
 if __name__ == "__main__":
-    with open("sat_compressed.json") as f:
+    with open("sat_compressed_gpt.json") as f:
         data = json.load(f)
 
     original = [i["passage"] for i in data]
@@ -49,7 +49,8 @@ if __name__ == "__main__":
         original_compressed_scores.append([1- cosine(original_embed, compressed_embed)])
         original_reconstructed_scores.append([1- cosine(original_embed, reconstructed_embed)])
 
-    with open("sat_reconstructed_cosines.pkl", "wb") as f:
-        pickle.dump(original_compressed_scores, f)
-        pickle.dump(original_reconstructed_scores, f)
-
+    with open("sat_reconstructed.json", "w") as f:
+        json.dump({
+            "original_compressed": original_compressed_scores,
+            "original_reconstructed": original_reconstructed_scores
+        }, f, indent=2)
