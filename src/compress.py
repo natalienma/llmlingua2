@@ -19,4 +19,4 @@ def compress_with_gpt(passage, max_tokens=2000):
     )
 
     return resp.choices[0].message.content
-
+     

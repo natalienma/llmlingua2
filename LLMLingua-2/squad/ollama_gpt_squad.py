@@ -4,7 +4,7 @@ import pandas as pd
 
 def answer_question(passage, question):
     resp = ollama.chat(model="llama3.2", messages=[
-        {"role": "user", "content": f"{passage}\n\n{question}\nAnswer with just the letter."}
+        {"role": "user", "content": f"{passage}\n\n{question}\nAnswer briefly."}
     ])
     return resp['message']['content']
 
@@ -30,8 +30,8 @@ for item in dataset:
         **item,  # includes passage, compressed, question, answer, cosine, ratio
         "original_answer": original_answer,
         "compressed_answer": compressed_answer,
-        "original_correct": check_answer(original_answer[0].upper(), item['answer'].upper()),
-        "compressed_correct": check_answer(compressed_answer[0].upper() == item['answer'].upper()),
+        "original_correct": check_answer(original_answer, item['answer']),
+    "compressed_correct": check_answer(compressed_answer, item['answer']),
     })
 
 with open("results_gpt_squad.json", "w") as f:

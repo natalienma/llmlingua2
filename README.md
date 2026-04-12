@@ -48,58 +48,58 @@ I used an SAT Egnlish dataset to evaluate compression quality becuase QA pairs p
 **Only a 9% accuracy drop at an average 4.5x compression ratio** 
 GPT-4 very aggressively compressed SAT English despite the passages being semantically dense. 
 
+![alt text](<Compression vs Accuracy 10 Groups .png>)
+![alt text](<Compression vs Accuracy 20 groups.png>)
+*llama3.2 seems to be arbitrarily equally as good at answering original and compressed SAT English questions.*
+There seems to be no strong relationship between performance of compressed vs. uncompressed.
+
+---
 
 # 2. GPT-4 vs. BERT Compression Accuracy
+I evaluated the performance of llama3.2 on both the original and compressed SAT passages from GPT-4 and BERT. 
+
+| Method | Compression Ratio | SAT Accuracy |
+|--------|-------------------|--------------|
+| No Compression | 1x | 60.07% |
+| GPT-4 Compression | ~4.5x | 53.36% |
+| BERT Compression | — | 54.04 |
+
+BERT matches GPT-4 accuracy at similar compression ratios. For SAT English datasets, a small encoder can replace an expensive large model for compression during inference.
 
 # 3. Domain-specific compression
+| Domain | Dataset | Avg. Compression Ratio | Avg. Cosine Score | Notes |
+|--------|---------|------------------------|---------------------|-------|
+| Literary + Fiction| SAT English | ~4.5x | High ratio; stylistic content aggressively pruned |
+| Factual / Encyclopedic | SQuAD (Wikipedia) | ~1.5x | Lower ratio; dense factual content preserved |
+
+> **Key finding:** With the same compression prompt, GPT-4 compresses rhetorical text (SAT) much more aggressively than encyclopedic text. Therefore, the compression ratio must be a function of the domain and type of text. 
 
 # 4. Round Trip Reconstruction + Cosine Similarity Metric
-
-# 5. Alignment + Soft Scoring
-
-# Quality Metrics:
-## 1. Round Trip Reconstruction
 After compressing the text, have GPT-4 reconstruct the original using the compressed text. Score the similarity using Cosine Similarity scoring.
 
-Original vs Compressed Similarity: 
-0.902 similarity 
-
-Original vs Reconstructed Similarity: 
-0.936 similarity
+- **Original vs. Compressed:** 0.902
+- **Original vs. Reconstructed:** 0.936
 
 As compression becomes more aggressive, semantic similarity decreases.
 ![alt text](<Compression vs Cosine.png>)
 
-### GPT-4 reconstructed prompt is more semantically similar to the original than the compressed prompt is to the original. 
+**GPT-4 reconstructed prompt is more semantically similar to the original than the compressed prompt is to the original. Therefore, GPT-4 successfully recovers meaning lost during compression.** 
 
-# Evaluation using SAT English Questions:
-Through a SAT English dataset, passages were compressed with GPT-4. 
-We then tested performance of a third-party open source model (llama3.2, not GPT or BERT) on questions with both original passages and compressed passages:
-
-Original accuracy: 63.09%
-Compressed accuracy: 54.36%
-
-## Compression - Accuracy Tradeoff
-*llama3.2 seems to be arbitrarily equally as good at answering original and compressed SAT English questions.*
-![alt text](<Compression vs Accuracy 10 Groups .png>)
-![alt text](<Compression vs Accuracy 20 groups.png>)
-There seems to be no strong relationship between performance of compressed vs. uncompressed.
-
-### Alignment 
-**Soft Scoring could not be achieved:**
-1. Soft Scoring with GPT-4:
+# 5. Alignment + Soft Scoring 
+**Why does Soft Scoring not work:**
+### 1. Soft Scoring with GPT-4:
 Prompt GPT-4 to score each word from 0.0-1.0, providing more nuance for pruning.
 Problem: GPT-4 hallucinates due to lack of reasoning. This hallucination compounded over time and soon all scores were converging to 0.
 ```[0.9, 0.9, 0.9, 0.9, 0.1, 0.5, 0.1, 0.5, 0.1, 1.0, 1.0, 1.0, 1.0, 0.5, 0.5, 0.1, 1.0, 1.0, 0.1, 0.5, 0.1, 0.1, 0.5, 0.5, 0.5, 0.1, 0.1, 0.1, 0.5, 0.1, 0.1, 0.5, 0.1, 0.5, 0.5, 0.1, 0.5, 1.0, 0.5, 0.1, 0.5, 0.5, 1.0, 0.1, 0.5, 0.1, 0.1, 0.5, 0.5, 0.1, 0.1, 0.5, 0.5, 0.5, 0.1, 0.1, 0.1, 0.5, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]```
 
-2. Binary scoring (from original paper):
+### 2. Binary scoring (from original paper):
 Not working because GPT-4 paraphrased the passages in the dataset instead of just dropping tokens.
 - Poetic writing: GPT paraphrases very aggressively to replace flowery language with semantically important words (and reorders alot)
 - Informational writing: Expected GPT to paraphrase less, but it still discards almost the entire middle section. 
 
 Note about SAT English compression: The average compression ratio is 4.5, very aggressive likely because the compression prompt was to “compress as aggressively as possible.” While this affects alignment heavily, it surprisingly didn’t really affect performance– the answers for the aggressively compressed prompts were still quite accurate, with only a 9% loss. This is interesting because SAT English is supposed to be semantically very dense. Often, questions will ask about the context in which a certain word is used. However, if that word is pruned, the answer will likely be incorrect.
 
-3. Soft Scoring with Attention Weights:
+### 3. Soft Scoring with Attention Weights:
 For this sentence: “The Great Depression was a Severe Global Economic Crisis.” The scores are as follows:
 [CLS]: 0.150
 the: 0.038
@@ -115,10 +115,31 @@ crisis: 0.045
 [SEP]: 0.377
 The problem is attention weights do not correspond to importance. 
 
-# Results:
-| Method            | Compression Ratio | SAT Accuracy |   |   |
-|-------------------|-------------------|--------------|---|---|
-| No Compression    | 1                 | 0.63         |   |   |
-| GPT-4 Compression | 3                 | 0.54         |   |   |
-| BERT Compression  |                   |              |   |   |
+---
 
+# Next Steps:
+
+## BERT Potential Overfitting
+- I noticed validation loss stopped improving after Epoch 2, while training loss improved. 
+
+| Epoch | Training Loss | Validation Loss |
+|-------|---------------|-----------------|
+| 1     | 0.3652        | 0.3559          |
+| 2     | 0.3498        | 0.3508          |
+| 3     | 0.3384        | 0.3510          |
+
+
+## Soft Scoring 
+- Use Large Reasoning Model or prompt GPT-4 to reason before assigning a score to each token, which may prevent its descent into madness
+
+## More Domains:
+- Technical domains like medical or legal documents. High utility because they often use RAG. 
+
+- News articles. Interesting to see how compression will affect the journalistic voice and if it maintains the bias. 
+
+- More literature/poetry. If compressed and reconstructed, will a model be able to predict the writer?
+
+
+SQUAD:
+Done. Avg cosine (orig vs compressed): 0.9450
+Done. Avg cosine (orig vs reconstructed): 0.9624

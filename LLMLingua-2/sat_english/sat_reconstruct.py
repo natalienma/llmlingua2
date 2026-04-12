@@ -20,7 +20,7 @@ def reconstruct(compressed):
         model="gpt-4",
         messages=[{"role": "user", 
                    "content": RECONSTRUCT_PROMPT.format(text=compressed)}],
-        temperature=0.3
+        temperature=0
     )
     reconstructed = resp.choices[0].message.content
     return reconstructed
@@ -49,7 +49,7 @@ if __name__ == "__main__":
         original_compressed_scores.append([1- cosine(original_embed, compressed_embed)])
         original_reconstructed_scores.append([1- cosine(original_embed, reconstructed_embed)])
 
-    with open("results.pkl", "wb") as f:
+    with open("sat_reconstructed_cosines.pkl", "wb") as f:
         pickle.dump(original_compressed_scores, f)
         pickle.dump(original_reconstructed_scores, f)
 
