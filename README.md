@@ -45,13 +45,14 @@ I used an SAT Egnlish dataset to evaluate compression quality becuase QA pairs p
 | No Compression | 63.09% |
 | GPT-4 Compression (4.5x ratio) | 54.36% |
 
+
 **Only a 9% accuracy drop at an average 4.5x compression ratio** 
 GPT-4 very aggressively compressed SAT English despite the passages being semantically dense. 
 
-![alt text](<Compression vs Accuracy 10 Groups .png>)
-![alt text](<Compression vs Accuracy 20 groups.png>)
+![alt text](plot_sat_original_vs_compressed.png)
 *llama3.2 seems to be arbitrarily equally as good at answering original and compressed SAT English questions.*
-There seems to be no strong relationship between performance of compressed vs. uncompressed.
+There seems to be no strong relationship between performance of compressed vs. uncompressed, but sometimes, **compressed passages outperform uncompressed passages.** 
+This strongly suggests that compression is not necessarily harmful.
 
 ---
 
@@ -66,15 +67,19 @@ I evaluated the performance of llama3.2 on both the original and compressed SAT 
 
 BERT matches GPT-4 accuracy at similar compression ratios. For SAT English datasets, a small encoder can replace an expensive large model for compression during inference.
 
-# 3. Domain-specific compression
+# 3. Domain-specific compression (!)
 | Domain | Dataset | Avg. Compression Ratio | Avg. Cosine Score (Compressed) | Avg. Cosine Score (Reconstructed) | Notes |
 |--------|---------|------------------------|---------|---------------------|-------|
 | Literary + Fiction| SAT English | ~4.5x | 0.8069 | 0.8114 |High ratio; stylistic content aggressively pruned |
 | Factual / Encyclopedic | SQuAD (Wikipedia) | ~1.5x | 0.9450 | 0.9624 |Lower ratio; dense factual content preserved |
 
-> **Key finding:** With the same compression prompt, GPT-4 compresses rhetorical text (SAT) much more aggressively than encyclopedic text. Therefore, the compression ratio must be a function of the domain and type of text. 
+![alt text](plot_sat_vs_squad.png)
+![alt text](plot_ratio_distribution.png)
+The compression ratio for SQuAD clusters at 1-2x while SAT goes from 2-6x. 
 
-SQuAD, a factual text (1.5x compression) retains significantly more semantic similarity than SAT (4.5x compression). Reconstruction recovers some lost meaning, but the gap is larger for SQuAD (0.017 gain) vs SAT (0.005 gain). Therefore GPT-4 recovers more meaning from factual compressed text than rhetorical compressed text
+> **KEY FINDING:** With the same compression prompt, GPT-4 compresses rhetorical text (SAT) much more aggressively than encyclopedic text. Therefore, **the compression ratio must be a function of the domain and type of text.**
+
+SQuAD, a factual text (1.5x compression) retains significantly more semantic similarity than SAT (4.5x compression). Reconstruction recovers some lost meaning, but the gap is larger for SQuAD (0.017 gain) vs SAT (0.005 gain). **Therefore GPT-4 recovers more meaning from factual compressed text than rhetorical/literary compressed text**
 
 # 4. Round Trip Reconstruction + Cosine Similarity Metric
 After compressing the text, have GPT-4 reconstruct the original using the compressed text. Score the similarity using Cosine Similarity scoring.
@@ -86,6 +91,9 @@ As compression becomes more aggressive, semantic similarity decreases.
 ![alt text](<Compression vs Cosine.png>)
 
 **GPT-4 reconstructed prompt is more semantically similar to the original than the compressed prompt is to the original. Therefore, GPT-4 successfully recovers meaning lost during compression.** 
+
+![alt text](plot_cosine_comparison.png)
+GPT-4 was able to reconstruct SQuAD with much higher accuracy than SAT.
 
 # 5. Alignment + Soft Scoring 
 **Why does Soft Scoring not work:**
