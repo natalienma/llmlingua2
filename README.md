@@ -1,4 +1,5 @@
-# LLMLingua-2: Domain Specific Compression, Soft Scoring Alignment, and Round-Trip Evaluation
+# LLMLingua-2: 
+## Domain Specific Compression, Soft Scoring Alignment, and Round-Trip Evaluation
 This is based off of the paper: LLMLingua-2: Learn Compression Target via Data Distillation for Efficient and Faithful Task-Agnostic Prompt Compression
 
 ---
